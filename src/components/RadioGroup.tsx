@@ -26,8 +26,8 @@ const RadioGroup: React.FC<RadioGroupProps> = ({ question, options, selectedValu
               key={option}
               className={`flex items-center w-full min-h-[56px] p-3.5 sm:p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
                 isSelected
-                  ? 'bg-indigo-50 border-indigo-500 shadow-md'
-                  : 'bg-white border-slate-300 hover:border-indigo-400 active:border-indigo-500'
+                  ? 'bg-orange-50 border-orange-500 shadow-md'
+                  : 'bg-white border-slate-300 hover:border-orange-400 active:border-orange-500'
               }`}
               whileTap={{ scale: 0.98 }}
             >
@@ -39,7 +39,7 @@ const RadioGroup: React.FC<RadioGroupProps> = ({ question, options, selectedValu
                 onChange={() => onChange(option)}
                 className="sr-only" // Hide the actual radio button
               />
-              <span className={`text-sm sm:text-base leading-relaxed ${isSelected ? 'font-semibold text-indigo-800' : 'text-slate-700'}`}>
+              <span className={`text-sm sm:text-base leading-relaxed ${isSelected ? 'font-semibold text-gray-800' : 'text-slate-700'}`}>
                 {option}
               </span>
             </motion.label>

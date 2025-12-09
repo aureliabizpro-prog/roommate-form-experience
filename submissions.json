@@ -125,5 +125,30 @@
     ],
     "q18_smoking_habit": "有，有時候無法避免在室內抽菸",
     "submittedAt": "2025-12-09T10:53:44.273Z"
+  },
+  {
+    "id": 6,
+    "email": "test@gmail.com",
+    "q2_routine": "偏早睡早起（11 點前睡，7 點起）",
+    "q3_bathroom_preference": "彈性高，只要能使用就好，不介意錯開室友時段。",
+    "q4_cleaning_habits": "很隨性，沒有固定掃地時間",
+    "q5_friends_over": "常常可以帶人，只要簡單說一下",
+    "q6_pets": "完全不能接受",
+    "q8_noise_sensitivity": "即使有聲音也能正常休息或工作，幾乎不受噪音影響。",
+    "q9_roommate_interaction": "常常一起做事，關係不錯",
+    "q10_renting_experience": "從未有過",
+    "q11_gender": "不願透露",
+    "q12_gender_identity": "男",
+    "q13_roommate_gender_preference": [
+      "限生理男"
+    ],
+    "q14_location": "大安",
+    "q15_rent_budget": "$12,001 - $15,000",
+    "q16_move_in_date": "2026-01-08",
+    "q17_allergies": [
+      "對寵物毛髮/皮屑"
+    ],
+    "q18_smoking_habit": "沒有",
+    "submittedAt": "2025-12-09T11:15:31.725Z"
   }
 ]
