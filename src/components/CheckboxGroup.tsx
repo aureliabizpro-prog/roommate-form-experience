@@ -19,20 +19,22 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = ({ question, options, select
 
   return (
     <div className="w-full">
-        <h3 className="text-xl font-medium text-slate-700 mb-4">
-            {question}
-            {required && <span className="text-red-500 ml-1">*</span>}
-        </h3>
-        <div className="space-y-3">
-            {options.map((option) => {
+        {question && (
+          <h3 className="text-lg sm:text-xl font-medium text-slate-700 mb-3 sm:mb-4">
+              {question}
+              {required && <span className="text-red-500 ml-1">*</span>}
+          </h3>
+        )}
+        <div className="space-y-2 sm:space-y-3">
+            {options?.map((option) => {
                 const isSelected = selectedValues.includes(option);
                 return (
                     <motion.label
                         key={option}
-                        className={`flex items-center w-full p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                        className={`flex items-center w-full min-h-[56px] p-3.5 sm:p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
                             isSelected
                             ? 'bg-indigo-50 border-indigo-500 shadow-md'
-                            : 'bg-white border-slate-300 hover:border-indigo-400'
+                            : 'bg-white border-slate-300 hover:border-indigo-400 active:border-indigo-500'
                         }`}
                         whileTap={{ scale: 0.98 }}
                     >
@@ -43,7 +45,7 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = ({ question, options, select
                             onChange={() => handleChange(option)}
                             className="sr-only" // Hide the actual checkbox
                         />
-                         <span className={`text-lg ${isSelected ? 'font-semibold text-indigo-800' : 'text-slate-700'}`}>
+                         <span className={`text-sm sm:text-base leading-relaxed ${isSelected ? 'font-semibold text-indigo-800' : 'text-slate-700'}`}>
                             {option}
                         </span>
                     </motion.label>

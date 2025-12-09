@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useFormStore } from '@/hooks/useFormStore';
 import { useTracking } from '@/hooks/useTracking';
@@ -98,7 +98,7 @@ const progressMessages = [
 
 type QuestionConfig = {
     key: keyof FormData | string;
-    type: 'email' | 'text' | 'radio' | 'checkbox' | 'long_text' | 'date';
+    type: 'email' | 'text' | 'radio' | 'checkbox' | 'long_text' | 'date' | string;
     text: string;
     required?: boolean;
     options?: string[];
@@ -192,7 +192,7 @@ export default function FormPage() {
         // 若未觸發顯示 q7 的條件，避免送出舊的/隱藏的答案
         const shouldShowQ7 =
             formData.q3_bathroom_preference === '因為上班關係，有固定且不可妥協的時段';
-        const submissionData: FormData = { ...formData };
+        const submissionData = { ...formData };
         const dataForValidation = (() => {
             if (shouldShowQ7) return submissionData;
             const { q7_bathroom_schedule, ...rest } = submissionData;
@@ -274,7 +274,7 @@ export default function FormPage() {
                                     question=""
                                     value={(value as string) || ''}
                                     onChange={handleChange}
-                                    required={required}
+                                    required={required ?? false}
                                     placeholder={placeholder}
                                 />
                             ),
@@ -283,26 +283,26 @@ export default function FormPage() {
                                     question=""
                                     value={(value as string) || ''}
                                     onChange={handleChange}
-                                    required={required}
+                                    required={required ?? false}
                                     placeholder={placeholder}
                                 />
                             ),
                             'radio': (
                                 <RadioGroup
                                     question=""
-                                    options={options}
+                                    options={options ?? []}
                                     selectedValue={(value as string) || ''}
                                     onChange={handleChange}
-                                    required={required}
+                                    required={required ?? false}
                                 />
                             ),
                             'checkbox': (
                                 <CheckboxGroup
                                     question=""
-                                    options={options}
+                                    options={options ?? []}
                                     selectedValues={(value as string[]) || []}
                                     onChange={handleChange}
-                                    required={required}
+                                    required={required ?? false}
                                 />
                             ),
                             'long_text': (
@@ -310,7 +310,7 @@ export default function FormPage() {
                                     question=""
                                     value={(value as string) || ''}
                                     onChange={handleChange}
-                                    required={required}
+                                    required={required ?? false}
                                     placeholder={placeholder}
                                 />
                             ),
@@ -319,7 +319,7 @@ export default function FormPage() {
                                     question=""
                                     value={(value as string) || ''}
                                     onChange={handleChange}
-                                    required={required}
+                                    required={required ?? false}
                                 />
                             ),
                         }[type]
@@ -349,22 +349,23 @@ export default function FormPage() {
     
 	    return (
 	        <main className="flex flex-col h-screen w-full overflow-hidden bg-slate-50">
-	             <div className="p-4 w-full max-w-2xl mx-auto">
-	                <div className="flex justify-between items-center mb-2">
-	                    <p className="text-base font-semibold text-indigo-600">{progressText}</p>
-	                    <p className="text-sm font-semibold text-slate-600">
+	             <div className="p-3 sm:p-4 w-full max-w-2xl mx-auto">
+	                <div className="flex justify-between items-center mb-2 sm:mb-3">
+	                    <p className="text-xs sm:text-base font-semibold text-indigo-600 leading-tight">{progressText}</p>
+	                    <p className="text-xs sm:text-sm font-bold text-slate-700 bg-white px-3 py-1 rounded-full shadow-sm">
 	                        {Math.min(currentQuestion + 1, totalQuestions)} / {totalQuestions}
 	                    </p>
 	                </div>
-	                <div className="w-full bg-slate-200/80 rounded-full h-3">
+	                <div className="w-full bg-slate-200/80 rounded-full h-2.5 sm:h-3">
 	                    <motion.div
-	                        className="h-3 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500 shadow-sm"
+	                        className="h-2.5 sm:h-3 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500 shadow-sm"
 	                        animate={{ width: `${progress}%` }}
+	                        transition={{ duration: 0.3 }}
 	                    />
 	                </div>
 	            </div>
 
-            <div className="flex-grow flex items-center justify-center px-4 py-2 overflow-y-auto">
+            <div className="flex-grow flex items-start sm:items-center justify-center px-3 sm:px-4 py-2 overflow-y-auto">
                 <AnimatePresence initial={false} custom={direction} mode="wait">
                     <motion.div
                         key={currentQuestion}
@@ -377,7 +378,7 @@ export default function FormPage() {
                         className="w-full max-w-2xl"
                     >
                         {!isComplete ? (
-                             <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 relative">
+                             <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 md:p-8 relative">
                                 {question && renderQuestion(question)}
                                 {showQ7Conditional && (
                                     <motion.div
@@ -390,17 +391,17 @@ export default function FormPage() {
                                         {renderQuestion(conditionalQuestion, true)}
                                     </motion.div>
                                 )}
-                                {error && <p className="text-red-500 text-sm mt-4 ml-9">{error}</p>}
+                                {error && <p className="text-red-500 text-sm mt-4 ml-0 sm:ml-9 bg-red-50 p-3 rounded-lg">{error}</p>}
                             </div>
                         ) : (
-                            <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
-                                <h2 className="text-3xl font-bold text-slate-800 mb-4">🙌 您已完成所有問題！</h2>
-                                <p className="text-slate-600 mb-8">準備好看看您的專屬統計，並開始媒合了嗎？</p>
+                            <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-6 sm:p-8 text-center">
+                                <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-3 sm:mb-4">🙌 您已完成所有問題！</h2>
+                                <p className="text-sm sm:text-base text-slate-600 mb-6 sm:mb-8">準備好看看您的專屬統計，並開始媒合了嗎？</p>
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     onClick={handleSubmit}
-                                    className="px-8 py-3 bg-green-500 text-white font-bold rounded-lg shadow-md hover:bg-green-600"
+                                    className="w-full sm:w-auto px-8 py-4 bg-green-500 text-white font-bold text-base sm:text-lg rounded-xl shadow-lg hover:bg-green-600 active:bg-green-700 transition-colors"
                                 >
                                     完成並提交
                                 </motion.button>
@@ -409,15 +410,24 @@ export default function FormPage() {
                     </motion.div>
                 </AnimatePresence>
             </div>
-            
-            <div className="p-4 flex justify-between items-center max-w-2xl w-full mx-auto sticky bottom-0 bg-slate-50 z-10">
-                <button onClick={handleBack} disabled={currentQuestion === 0} className="px-6 py-2 bg-slate-300 text-slate-800 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
+
+            <div className="p-3 sm:p-4 flex justify-between items-center gap-3 max-w-2xl w-full mx-auto sticky bottom-0 bg-slate-50/95 backdrop-blur-sm z-10 border-t border-slate-200/50">
+                <motion.button
+                    onClick={handleBack}
+                    disabled={currentQuestion === 0}
+                    className="flex-1 sm:flex-none min-h-[48px] px-5 sm:px-6 py-3 bg-slate-300 text-slate-800 font-medium rounded-xl disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-400 active:bg-slate-500 transition-colors shadow-sm"
+                    whileTap={{ scale: 0.97 }}
+                >
                     上一步
-                </button>
+                </motion.button>
                 {currentQuestion < totalQuestions && (
-                     <button onClick={handleNext} className="px-6 py-2 bg-indigo-600 text-white rounded-lg">
+                    <motion.button
+                        onClick={handleNext}
+                        className="flex-1 sm:flex-none min-h-[48px] px-5 sm:px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 active:bg-indigo-800 transition-colors shadow-md"
+                        whileTap={{ scale: 0.97 }}
+                    >
                         下一步
-                    </button>
+                    </motion.button>
                 )}
             </div>
         </main>

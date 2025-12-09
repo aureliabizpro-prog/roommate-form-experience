@@ -45,10 +45,12 @@ const EmailInput: React.FC<EmailInputProps> = ({ question, value, onChange, requ
 
   return (
     <div className="w-full">
-      <label htmlFor={question} className="block text-xl font-medium text-slate-700 mb-3">
-        {question}
-        {required && <span className="text-red-500 ml-1">*</span>}
-      </label>
+      {question && (
+        <label htmlFor={question} className="block text-lg sm:text-xl font-medium text-slate-700 mb-3">
+          {question}
+          {required && <span className="text-red-500 ml-1">*</span>}
+        </label>
+      )}
       <div className="relative">
         <input
           id={question}
@@ -56,12 +58,12 @@ const EmailInput: React.FC<EmailInputProps> = ({ question, value, onChange, requ
           value={value}
           onChange={handleInputChange}
           placeholder={placeholder || "your.email@example.com"}
-          className="w-full px-4 py-3 text-lg border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+          className="w-full px-3.5 sm:px-4 py-3 text-sm sm:text-base border-2 border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
           autoComplete="off"
         />
         {suggestion && (
-          <div 
-            className="absolute top-full left-0 mt-1 w-full px-4 py-3 text-lg text-slate-400 border border-transparent rounded-lg cursor-pointer"
+          <div
+            className="absolute top-full left-0 mt-1 w-full px-3.5 sm:px-4 py-3 text-sm sm:text-base text-indigo-600 bg-indigo-50 border-2 border-indigo-200 rounded-xl cursor-pointer hover:bg-indigo-100 active:bg-indigo-200 transition-colors shadow-sm"
             onClick={handleSuggestionClick}
           >
             {suggestion}

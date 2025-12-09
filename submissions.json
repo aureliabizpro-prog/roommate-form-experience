@@ -100,5 +100,30 @@
     ],
     "q18_smoking_habit": "有，但我會遵守協商後的居住公約，不在室內抽菸",
     "submittedAt": "2025-12-09T10:32:18.878Z"
+  },
+  {
+    "id": 5,
+    "email": "de@gmail.com",
+    "q2_routine": "偏早睡早起（11 點前睡，7 點起）",
+    "q3_bathroom_preference": "因為上班關係，有固定且不可妥協的時段",
+    "q4_cleaning_habits": "沒固定習慣，但願意配合大家共識",
+    "q5_friends_over": "常常可以帶人，只要簡單說一下",
+    "q6_pets": "勉強接受，但希望寵物不要在公共區域跑來跑去",
+    "q8_noise_sensitivity": "一般生活噪音不會影響我，適應力較強。",
+    "q9_roommate_interaction": "很熟，像朋友或家人一樣",
+    "q10_renting_experience": "有過合租經驗，時間較長 (一年以上)",
+    "q11_gender": "男",
+    "q12_gender_identity": "女",
+    "q13_roommate_gender_preference": [
+      "限性別認同為男性"
+    ],
+    "q14_location": "大安",
+    "q15_rent_budget": "$15,001 - $18,000",
+    "q16_move_in_date": "2025-12-17",
+    "q17_allergies": [
+      "花粉"
+    ],
+    "q18_smoking_habit": "有，有時候無法避免在室內抽菸",
+    "submittedAt": "2025-12-09T10:53:44.273Z"
   }
 ]

@@ -1,36 +1,114 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 好室友 housemate_tw® - 找室友媒合體驗
 
-## Getting Started
+> 智能室友配對系統，通過多維度評估幫助您找到最合適的室友
 
-First, run the development server:
+[![Next.js](https://img.shields.io/badge/Next.js-16.0-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8)](https://tailwindcss.com/)
+
+## ✨ 功能特色
+
+- 📱 **完美響應式設計** - 針對手機、平板、桌面優化的用戶體驗
+- 🎯 **19 題智能問卷** - 全方位評估生活習慣、預算、地點偏好
+- 💾 **自動存檔** - localStorage 自動儲存填寫進度
+- 📊 **實時統計** - 查看您的排名和社群數據
+- ✅ **表單驗證** - Zod 驗證確保數據完整性
+- 🎨 **流暢動畫** - Framer Motion 打造絲滑過渡效果
+- 📈 **GA4 追蹤** - 完整的用戶行為分析
+- 🔄 **Google Form 整合** - 自動提交到 Google 表單
+
+## 🚀 快速開始
+
+### 環境要求
+
+- Node.js 16.x 或更高版本
+- npm 8.x 或更高版本
+
+### 安裝
 
 ```bash
+# 安裝依賴
+npm install
+
+# 啟動開發服務器
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+訪問 [http://localhost:3000](http://localhost:3000) 開始體驗！
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 構建生產版本
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# 構建
+npm run build
 
-## Learn More
+# 啟動生產服務器
+npm run start
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠 技術棧
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **框架**: [Next.js 16](https://nextjs.org/) with App Router
+- **語言**: [TypeScript 5](https://www.typescriptlang.org/)
+- **樣式**: [Tailwind CSS 4](https://tailwindcss.com/)
+- **狀態管理**: [Zustand](https://github.com/pmndrs/zustand)
+- **表單驗證**: [Zod](https://github.com/colinhacks/zod)
+- **動畫**: [Framer Motion](https://www.framer.com/motion/)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📋 項目結構
 
-## Deploy on Vercel
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── api/               # API routes
+│   ├── form/             # 表單頁面
+│   ├── success/          # 成功頁面
+│   └── page.tsx          # 首頁
+├── components/            # UI 組件
+├── hooks/                 # React Hooks
+└── lib/                   # 工具庫
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📊 問卷結構
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+問卷包含 9 個主要部分，共 19 個問題，涵蓋：
+
+- 📧 基本信息
+- 🏠 生活習慣與相處偏好
+- 👤 個人資料
+- 📍 租屋條件（地點、預算、日期）
+- 🌸 健康與生活方式
+
+## 🎨 UI/UX 優化
+
+### 手機端優化
+- ✅ 48x48px 最小觸控區域
+- ✅ 響應式字體和間距
+- ✅ 優化的長文本換行
+- ✅ 流暢的過渡動畫
+
+### 視覺設計
+- 🎨 Indigo + Purple 漸層配色
+- 💫 Framer Motion 動畫
+- 📱 iOS/Android 設計適配
+
+## 🚢 部署
+
+### Vercel (推薦)
+
+最簡單的部署方式是使用 [Vercel Platform](https://vercel.com/new)
+
+### 其他平台
+
+也可部署到：
+- Netlify
+- AWS Amplify
+- Cloudflare Pages
+
+## 📝 許可證
+
+MIT License
+
+---
+
+**⭐ 如果這個項目對您有幫助，請給我們一個星標！**
