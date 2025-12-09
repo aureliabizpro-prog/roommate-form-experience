@@ -361,7 +361,7 @@ export default function FormPage() {
 	                                {Math.min(currentQuestion + 1, totalQuestions)} / {totalQuestions}
 	                            </p>
 	                        </div>
-	                        <div className="w-full bg-orange-100/60 rounded-full h-2.5">
+	                        <div className="w-full bg-red-500 rounded-full h-2.5 min-h-[10px]">
 	                            <motion.div
 	                                className="h-2.5 rounded-full bg-gradient-to-r from-orange-300 via-orange-400 to-green-500 shadow-sm"
 	                                animate={{ width: `${progress}%` }}
