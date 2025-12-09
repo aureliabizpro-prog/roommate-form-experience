@@ -222,7 +222,9 @@ export default function FormPage() {
                 trackEvent({ action: 'form_submission_success' });
                 setHasSubmitted(true);
                 resetForm();
-                router.push(`/success?userId=${resJson.userId}`);
+                const userId = typeof resJson.userId === 'number' ? resJson.userId : undefined;
+                const target = userId ? `/success?userId=${userId}` : '/success';
+                router.push(target);
             } else {
                 alert('提交失敗，請稍後再試。');
             }
