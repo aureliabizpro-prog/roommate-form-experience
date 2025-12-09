@@ -1,0 +1,425 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useFormStore } from '@/hooks/useFormStore';
+import { useTracking } from '@/hooks/useTracking';
+import { formSchema, FormData } from '@/lib/formSchema';
+import { motion, AnimatePresence } from 'framer-motion';
+
+// Import components
+import TextInput from '@/components/TextInput';
+import RadioGroup from '@/components/RadioGroup';
+import CheckboxGroup from '@/components/CheckboxGroup';
+import LongTextArea from '@/components/LongTextArea';
+import DatePicker from '@/components/DatePicker';
+import EmailInput from '@/components/EmailInput';
+
+const sections = [
+    // ... (Full sections data as before)
+    { id: 1, title: "好室友housemate_tw® 找室友媒合體驗", emoji: "🙌", questions: [{id: 1, key: 'email', text: "Email", type: "email", required: true}] },
+    { id: 2, title: "🧩生活習慣與相處偏好", emoji: "🧩", questions: [
+        {id: 2, key: 'q2_routine', text: "你的作息大致是？", type: "radio", required: true, options: ["極度早睡早起（9–10 點睡，5–6 點起）", "偏早睡早起（11 點前睡，7 點起）", "正常作息（不早不晚）", "偏晚睡晚起（凌晨 1–2 點睡，9–10 點起）", "極度夜貓（3 點才睡，11 點起）"]},
+        {id: 3, key: 'q3_bathroom_preference', text: "您對衛浴設備的使用時間是否有固定或不可妥協的偏好？", type: "radio", required: true, options: ["因為上班關係，有固定且不可妥協的時段", "有偏好的時段，但若室友有需求，可提前告知並協調。", "對使用時間完全沒有限制或偏好，隨時可用即可。", "彈性高，只要能使用就好，不介意錯開室友時段。", "會主動規劃使用時間，以避開室友的熱門時段"]},
+        {id: 4, key: 'q4_cleaning_habits', text: "你平常對公共空間的打掃習慣是？", type: "radio", required: true, options: ["很隨性，沒有固定掃地時間", "髒了再掃，約兩三週一次", "沒固定習慣，但願意配合大家共識", "固定一週打掃一次", "看到髒就立刻掃"]},
+        {id: 5, key: 'q5_friends_over', text: "對於室友帶朋友回家，你的接受程度是？", type: "radio", required: true, options: ["完全不希望帶人回家", "偶爾可以，但要先講一聲", "OK，只要互相尊重就好", "常常可以帶人，只要簡單說一下", "沒限制，隨時都能帶"]},
+        {id: 6, key: 'q6_pets', text: "對於室友養寵物，你的想法是？", type: "radio", required: true, options: ["完全不能接受", "勉強接受，但希望寵物不要在公共區域跑來跑去", "OK，只要有清潔、安靜的規範就好", "喜歡寵物，覺得有貓狗很好", "自己有養／超愛動物，完全沒問題"]}
+    ]},
+    // q7 is now handled conditionally
+    { id: 4, title: "🧩生活習慣與相處偏好", emoji: "🧩", questions: [
+        {id: 8, key: 'q8_noise_sensitivity', text: "您對生活噪音的敏感度如何？", type: "radio", required: true, options: ["任何細微聲響都會嚴重影響我的休息或專注。", "休息或專注時需要相對安靜的環境，容易被干擾。", "輕微的背景聲響可接受，但大聲或持續的噪音會受影響。", "一般生活噪音不會影響我，適應力較強。", "即使有聲音也能正常休息或工作，幾乎不受噪音影響。"]},
+        {id: 9, key: 'q9_roommate_interaction', text: "你理想中的室友相處方式是？", type: "radio", required: true, options: ["各住各的、互不打擾", "有基本禮貌，打招呼就好", "偶爾會聊天，適度互動", "常常一起做事，關係不錯", "很熟，像朋友或家人一樣"]},
+        {id: 10, key: 'q10_renting_experience', text: "你以前有跟別人合租的經驗嗎?", type: "radio", required: true, options: ["從未有過", "有過合租經驗，但時間不長 (一年左右)", "有過合租經驗，時間較長 (一年以上)", "目前正與室友合租中，並尋找新的合租機會"]}
+    ]},
+    { id: 5, title: "👤基本資料補充", emoji: "👤", questions: [
+        {id: 11, key: 'q11_gender', text: "你的生理性別", type: "radio", required: true, options: ["男", "女", "不願透露"]},
+        {id: 12, key: 'q12_gender_identity', text: "你的性別認同", type: "radio", required: true, options: ["男", "女", "我不想透露", "非二元性別", "其他"]}
+    ]},
+    { id: 6, title: "👤基本資料補充", emoji: "👤", questions: [{id: 13, key: 'q13_roommate_gender_preference', text: "您希望尋找什麼性別的室友？", type: "checkbox", required: true, options: ["限性別認同為男性", "限性別認同為女性", "不拘", "限生理男", "限生理女", "都可以"]}] },
+    { id: 7, title: "👤基本資料補充", emoji: "👤", questions: [
+        {id: 14, key: 'q14_location', text: "你更想租住在哪裡？", placeholder: "最多 3 個地區，例如：台北市大安區、新北市板橋區", type: "long_text", required: true},
+        {id: 15, key: 'q15_rent_budget', text: "您個人期望的月租金分攤範圍是？", type: "radio", required: true, options: ["$8,000 以下", "$8,000 - $10,000", "$10,001 - $12,000", "$12,001 - $15,000", "$15,001 - $18,000", "$18,001 - $22,000", "$22,001 以上"]},
+        {id: 16, key: 'q16_move_in_date', text: "您計畫中的起租日?", type: "date", required: true},
+        {id: 17, key: 'q17_allergies', text: "您是否有任何過敏原？", type: "checkbox", required: true, options: ["無", "有特定的食物", "對寵物毛髮/皮屑", "塵蟎", "花粉", "清潔劑/化學品", "其他"]},
+        {id: 18, key: 'q18_smoking_habit', text: "您是否有抽菸習慣？", type: "radio", required: true, options: ["沒有", "有，但我會遵守協商後的居住公約，不在室內抽菸", "有，有時候無法避免在室內抽菸"]}
+    ]},
+    { id: 8, title: "還有什麼想補充的嗎？💬", emoji: "💬", questions: [{id: 19, key: 'q19_additional_notes', text: "補充說明", placeholder: "可以是你對合租的期待、也可以是一段簡短的自我介紹，或者MBTI、星座分享都可以喔～", type: "long_text", required: false}] },
+    { id: 9, title: "🙌 最後", emoji: "🙌", questions: [] }
+];
+
+// Special question that is conditionally rendered
+const conditionalQuestion = { id: 7, key: 'q7_bathroom_schedule', text: "您不可妥協的衛浴使用時段", placeholder: "例如：平日早上 7:30-8:00，晚上9:00-9:30", type: "long_text", required: false, sectionEmoji: '⏰' };
+
+const allQuestions = sections.flatMap(s =>
+    s.questions.map(q => ({
+        ...q,
+        sectionTitle: s.title,
+        sectionEmoji: s.emoji ?? s.title[0],
+    }))
+);
+const totalQuestions = allQuestions.length;
+
+type SectionQuestionMeta = {
+    sectionId: number;
+    isLastInSection: boolean;
+};
+
+const questionSectionMeta: Record<string, SectionQuestionMeta> = {};
+sections.forEach(section => {
+    section.questions.forEach((q, index) => {
+        questionSectionMeta[q.key as string] = {
+            sectionId: section.id,
+            isLastInSection: index === section.questions.length - 1,
+        };
+    });
+});
+
+const progressMessages = [
+    "旅程開始！讓我們認識真實的你。", // 0 (Email)
+    "生活步調，是和諧共處的第一步。", // 1 (q2 作息)
+    "你的衛浴偏好，我們正在聆聽。", // 2 (q3 衛浴偏好)
+    "維持整潔，從習慣開始。", // 3 (q4 打掃習慣)
+    "歡迎好友，也是一門藝術。", // 4 (q5 帶朋友)
+    "毛小孩的緣分，從這裡開始。", // 5 (q6 養寵物)
+    "噪音敏感度，是合租的隱形殺手嗎？", // 6 (q8 噪音)
+    "你與室友的理想距離是？", // 7 (q9 相處方式)
+    "過往經驗，塑造更好的未來。", // 8 (q10 合租經驗)
+    "性別認同，重要的個人資訊。", // 9 (q11 生理性別)
+    "理解與尊重，是尋找室友的第一步。", // 10 (q12 性別認同)
+    "精準配對，從明確偏好開始。", // 11 (q13 室友性別偏好)
+    "地點！地點！地點！你的理想落腳處在哪？", // 12 (q14 地區)
+    "關於預算，我們來好好聊聊。", // 13 (q15 租金預算)
+    "期待何時展開新生活？", // 14 (q16 起租日)
+    "你的健康，我們一起守護。", // 15 (q17 過敏原)
+    "坦誠溝通，共享舒適空間。", // 16 (q18 抽菸)
+    "最後一哩路！說說你的故事。", // 17 (q19 補充說明)
+    "完美配對，即將揭曉！" // 18 (完成頁)
+];
+
+type QuestionConfig = {
+    key: keyof FormData | string;
+    type: 'email' | 'text' | 'radio' | 'checkbox' | 'long_text' | 'date';
+    text: string;
+    required?: boolean;
+    options?: string[];
+    placeholder?: string;
+    sectionEmoji?: string;
+    sectionTitle?: string;
+};
+
+const questionEmojiMap: Record<string, string> = {
+    email: '✉️',
+    q2_routine: '⏰',
+    q3_bathroom_preference: '🚿',
+    q4_cleaning_habits: '🧹',
+    q5_friends_over: '👥',
+    q6_pets: '🐾',
+    q7_bathroom_schedule: '📅',
+    q8_noise_sensitivity: '🔊',
+    q9_roommate_interaction: '🤝',
+    q10_renting_experience: '📖',
+    q11_gender: '⚧️',
+    q12_gender_identity: '🌈',
+    q13_roommate_gender_preference: '🏠',
+    q14_location: '📍',
+    q15_rent_budget: '💰',
+    q16_move_in_date: '📆',
+    q17_allergies: '🌸',
+    q18_smoking_habit: '🚭',
+    q19_additional_notes: '💬',
+};
+
+export default function FormPage() {
+    const router = useRouter();
+    const { trackEvent } = useTracking();
+    const { formData, setFormData, resetForm } = useFormStore();
+    const [currentQuestion, setCurrentQuestion] = useState(0);
+    const [error, setError] = useState<string | null>(null);
+    const [direction, setDirection] = useState(1);
+    const [hasSubmitted, setHasSubmitted] = useState(false);
+
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            if (!hasSubmitted && currentQuestion > 0 && currentQuestion < totalQuestions) {
+                trackEvent({ action: 'form_abandoned', step: currentQuestion + 1 });
+            }
+        };
+
+        if (typeof window !== 'undefined') {
+            window.addEventListener('beforeunload', handleBeforeUnload);
+        }
+
+        return () => {
+            if (typeof window !== 'undefined') {
+                window.removeEventListener('beforeunload', handleBeforeUnload);
+            }
+        };
+    }, [hasSubmitted, currentQuestion, trackEvent]);
+
+    const handleNext = () => {
+        const question = allQuestions[currentQuestion];
+        if (question.required) {
+            const value = formData[question.key as keyof FormData];
+            const validationResult = formSchema.pick({ [question.key]: true }).safeParse({ [question.key]: value });
+            if (!validationResult.success) {
+                setError(validationResult.error.issues[0].message);
+                return;
+            }
+        }
+        
+        setError(null);
+        trackEvent({ action: `Q${question.id}_${question.key}_answered` });
+
+        const sectionInfo = questionSectionMeta[question.key as string];
+        if (sectionInfo?.isLastInSection) {
+            trackEvent({ action: `section_${sectionInfo.sectionId}_completed` });
+        }
+        setDirection(1);
+
+        if (currentQuestion < totalQuestions) {
+            setCurrentQuestion(currentQuestion + 1);
+        }
+    };
+
+    const handleBack = () => {
+        if (currentQuestion > 0) {
+            setDirection(-1);
+            setCurrentQuestion(currentQuestion - 1);
+        }
+    };
+    
+    const handleSubmit = async () => {
+        // 若未觸發顯示 q7 的條件，避免送出舊的/隱藏的答案
+        const shouldShowQ7 =
+            formData.q3_bathroom_preference === '因為上班關係，有固定且不可妥協的時段';
+        const submissionData: FormData = { ...formData };
+        const dataForValidation = (() => {
+            if (shouldShowQ7) return submissionData;
+            const { q7_bathroom_schedule, ...rest } = submissionData;
+            void q7_bathroom_schedule;
+            return rest;
+        })();
+
+        const validationResult = formSchema.safeParse(dataForValidation);
+        if (!validationResult.success) {
+            const firstErrorKey = validationResult.error.issues[0].path[0] as string;
+            const errorQuestionIndex = allQuestions.findIndex(q => q.key === firstErrorKey);
+            if (errorQuestionIndex !== -1) {
+                setCurrentQuestion(errorQuestionIndex);
+                setError(validationResult.error.issues[0].message);
+            }
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/submit-form', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(validationResult.data),
+            });
+            const resJson = await response.json();
+            if (response.ok) {
+                trackEvent({ action: 'form_submission_success' });
+                setHasSubmitted(true);
+                resetForm();
+                router.push(`/success?userId=${resJson.userId}`);
+            } else {
+                alert('提交失敗，請稍後再試。');
+            }
+        } catch {
+            alert('發生未知錯誤，請檢查您的網路連線。');
+        }
+    };
+
+    const renderQuestion = (question: QuestionConfig, isConditional = false) => {
+        const { key, type, text, required, options, placeholder, sectionEmoji, sectionTitle } = question;
+        const value = formData[key as keyof FormData];
+
+        const handleChange = (val: string | string[]) => {
+            setFormData({ [key]: val } as Partial<FormData>);
+            if (error) setError(null);
+        };
+
+        const questionEmoji =
+            questionEmojiMap[key as string] ??
+            sectionEmoji ??
+            '✨';
+
+        return (
+            <div className="w-full">
+                <div className="flex items-start gap-3 mb-3">
+                    {!isConditional && (
+                        <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-3xl sm:h-14 sm:w-14 sm:text-4xl">
+                            {questionEmoji}
+                        </span>
+                    )}
+                    <div className="flex-1">
+                        {!isConditional && sectionTitle && (
+                            <p className="text-[11px] uppercase tracking-wide text-slate-400 mb-1">
+                                {sectionTitle}
+                            </p>
+                        )}
+                        <h3 className={isConditional ? 'text-base text-slate-700' : 'text-lg sm:text-xl font-medium text-slate-800'}>
+                            {text}
+                            {required && <span className="text-red-500 ml-1">*</span>}
+                        </h3>
+                    </div>
+                </div>
+
+                <div className="mt-2">
+                    {
+                        {
+                            'email': (
+                                <EmailInput
+                                    question=""
+                                    value={(value as string) || ''}
+                                    onChange={handleChange}
+                                    required={required}
+                                    placeholder={placeholder}
+                                />
+                            ),
+                            'text': (
+                                <TextInput
+                                    question=""
+                                    value={(value as string) || ''}
+                                    onChange={handleChange}
+                                    required={required}
+                                    placeholder={placeholder}
+                                />
+                            ),
+                            'radio': (
+                                <RadioGroup
+                                    question=""
+                                    options={options}
+                                    selectedValue={(value as string) || ''}
+                                    onChange={handleChange}
+                                    required={required}
+                                />
+                            ),
+                            'checkbox': (
+                                <CheckboxGroup
+                                    question=""
+                                    options={options}
+                                    selectedValues={(value as string[]) || []}
+                                    onChange={handleChange}
+                                    required={required}
+                                />
+                            ),
+                            'long_text': (
+                                <LongTextArea
+                                    question=""
+                                    value={(value as string) || ''}
+                                    onChange={handleChange}
+                                    required={required}
+                                    placeholder={placeholder}
+                                />
+                            ),
+                            'date': (
+                                <DatePicker
+                                    question=""
+                                    value={(value as string) || ''}
+                                    onChange={handleChange}
+                                    required={required}
+                                />
+                            ),
+                        }[type]
+                    }
+                </div>
+            </div>
+        )
+    }
+    
+	    const isComplete = currentQuestion >= totalQuestions;
+    const question = !isComplete ? allQuestions[currentQuestion] : null;
+    const progress = (Math.min(currentQuestion, totalQuestions) / totalQuestions) * 100;
+    const progressText =
+        progressMessages[Math.min(currentQuestion, progressMessages.length - 1)] ||
+        '就快完成了！';
+
+    const showQ7Conditional =
+        !isComplete &&
+        question?.key === 'q3_bathroom_preference' &&
+        formData.q3_bathroom_preference === '因為上班關係，有固定且不可妥協的時段';
+
+    const variants = {
+        enter: (direction: number) => ({ x: direction > 0 ? '100%' : '-100%', opacity: 0, scale: 0.9 }),
+        center: { x: 0, opacity: 1, scale: 1 },
+        exit: (direction: number) => ({ x: direction < 0 ? '100%' : '-100%', opacity: 0, scale: 0.9 }),
+    };
+    
+	    return (
+	        <main className="flex flex-col h-screen w-full overflow-hidden bg-slate-50">
+	             <div className="p-4 w-full max-w-2xl mx-auto">
+	                <div className="flex justify-between items-center mb-2">
+	                    <p className="text-base font-semibold text-indigo-600">{progressText}</p>
+	                    <p className="text-sm font-semibold text-slate-600">
+	                        {Math.min(currentQuestion + 1, totalQuestions)} / {totalQuestions}
+	                    </p>
+	                </div>
+	                <div className="w-full bg-slate-200/80 rounded-full h-3">
+	                    <motion.div
+	                        className="h-3 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500 shadow-sm"
+	                        animate={{ width: `${progress}%` }}
+	                    />
+	                </div>
+	            </div>
+
+            <div className="flex-grow flex items-center justify-center px-4 py-2 overflow-y-auto">
+                <AnimatePresence initial={false} custom={direction} mode="wait">
+                    <motion.div
+                        key={currentQuestion}
+                        variants={variants}
+                        custom={direction}
+                        initial="enter"
+                        animate="center"
+                        exit="exit"
+                        transition={{ type: "spring", stiffness: 200, damping: 25 }}
+                        className="w-full max-w-2xl"
+                    >
+                        {!isComplete ? (
+                             <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 relative">
+                                {question && renderQuestion(question)}
+                                {showQ7Conditional && (
+                                    <motion.div
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: 'auto' }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        transition={{ duration: 0.3 }}
+                                        className="mt-4 pt-4 border-t border-slate-200"
+                                    >
+                                        {renderQuestion(conditionalQuestion, true)}
+                                    </motion.div>
+                                )}
+                                {error && <p className="text-red-500 text-sm mt-4 ml-9">{error}</p>}
+                            </div>
+                        ) : (
+                            <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
+                                <h2 className="text-3xl font-bold text-slate-800 mb-4">🙌 您已完成所有問題！</h2>
+                                <p className="text-slate-600 mb-8">準備好看看您的專屬統計，並開始媒合了嗎？</p>
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={handleSubmit}
+                                    className="px-8 py-3 bg-green-500 text-white font-bold rounded-lg shadow-md hover:bg-green-600"
+                                >
+                                    完成並提交
+                                </motion.button>
+                            </div>
+                        )}
+                    </motion.div>
+                </AnimatePresence>
+            </div>
+            
+            <div className="p-4 flex justify-between items-center max-w-2xl w-full mx-auto sticky bottom-0 bg-slate-50 z-10">
+                <button onClick={handleBack} disabled={currentQuestion === 0} className="px-6 py-2 bg-slate-300 text-slate-800 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                    上一步
+                </button>
+                {currentQuestion < totalQuestions && (
+                     <button onClick={handleNext} className="px-6 py-2 bg-indigo-600 text-white rounded-lg">
+                        下一步
+                    </button>
+                )}
+            </div>
+        </main>
+    );
+}

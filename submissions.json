@@ -1,0 +1,104 @@
+[
+  {
+    "id": 1,
+    "email": "aurelia.bizpro@gmail.com",
+    "q2_routine": "極度夜貓（3 點才睡，11 點起）",
+    "q3_bathroom_preference": "彈性高，只要能使用就好，不介意錯開室友時段。",
+    "q4_cleaning_habits": "很隨性，沒有固定掃地時間",
+    "q5_friends_over": "沒限制，隨時都能帶",
+    "q6_pets": "OK，只要有清潔、安靜的規範就好",
+    "q8_noise_sensitivity": "即使有聲音也能正常休息或工作，幾乎不受噪音影響。",
+    "q9_roommate_interaction": "常常一起做事，關係不錯",
+    "q10_renting_experience": "目前正與室友合租中，並尋找新的合租機會",
+    "q11_gender": "不願透露",
+    "q12_gender_identity": "非二元性別",
+    "q13_roommate_gender_preference": [
+      "都可以"
+    ],
+    "q14_location": "中正區 內湖區 中山區",
+    "q15_rent_budget": "5,001 - 8,000",
+    "q16_move_in_date": "2025-12-12",
+    "q17_allergies": [
+      "其他",
+      "對寵物毛髮/皮屑"
+    ],
+    "q18_smoking_habit": "有，有時候無法避免在室內抽菸",
+    "submittedAt": "2025-12-09T08:42:26.100Z"
+  },
+  {
+    "id": 2,
+    "email": "aurelia.bizpro@gmail.com",
+    "q2_routine": "偏晚睡晚起（凌晨 1–2 點睡，9–10 點起）",
+    "q3_bathroom_preference": "彈性高，只要能使用就好，不介意錯開室友時段。",
+    "q4_cleaning_habits": "看到髒就立刻掃",
+    "q5_friends_over": "OK，只要互相尊重就好",
+    "q6_pets": "自己有養／超愛動物，完全沒問題",
+    "q7_bathroom_schedule": "  ",
+    "q8_noise_sensitivity": "即使有聲音也能正常休息或工作，幾乎不受噪音影響。",
+    "q9_roommate_interaction": "有基本禮貌，打招呼就好",
+    "q10_renting_experience": "有過合租經驗，時間較長 (一年以上)",
+    "q11_gender": "女",
+    "q12_gender_identity": "我不想透露",
+    "q13_roommate_gender_preference": [
+      "限生理女"
+    ],
+    "q14_location": "台北大安\n新北板橋\n",
+    "q15_rent_budget": "$15,001 - $18,000",
+    "q16_move_in_date": "2026-01-01",
+    "q17_allergies": [
+      "清潔劑/化學品"
+    ],
+    "q18_smoking_habit": "有，有時候無法避免在室內抽菸",
+    "submittedAt": "2025-12-09T08:58:10.105Z"
+  },
+  {
+    "id": 3,
+    "email": "fed@gmail.com",
+    "q2_routine": "偏早睡早起（11 點前睡，7 點起）",
+    "q3_bathroom_preference": "對使用時間完全沒有限制或偏好，隨時可用即可。",
+    "q4_cleaning_habits": "固定一週打掃一次",
+    "q5_friends_over": "OK，只要互相尊重就好",
+    "q6_pets": "喜歡寵物，覺得有貓狗很好",
+    "q8_noise_sensitivity": "輕微的背景聲響可接受，但大聲或持續的噪音會受影響。",
+    "q9_roommate_interaction": "很熟，像朋友或家人一樣",
+    "q10_renting_experience": "有過合租經驗，時間較長 (一年以上)",
+    "q11_gender": "女",
+    "q12_gender_identity": "我不想透露",
+    "q13_roommate_gender_preference": [
+      "限性別認同為女性"
+    ],
+    "q14_location": "大安,桃園,台南",
+    "q15_rent_budget": "$15,001 - $18,000",
+    "q16_move_in_date": "2025-12-24",
+    "q17_allergies": [
+      "其他"
+    ],
+    "q18_smoking_habit": "有，但我會遵守協商後的居住公約，不在室內抽菸",
+    "submittedAt": "2025-12-09T10:26:09.781Z"
+  },
+  {
+    "id": 4,
+    "email": "gas@gmail.com",
+    "q2_routine": "偏晚睡晚起（凌晨 1–2 點睡，9–10 點起）",
+    "q3_bathroom_preference": "有偏好的時段，但若室友有需求，可提前告知並協調。",
+    "q4_cleaning_habits": "看到髒就立刻掃",
+    "q5_friends_over": "沒限制，隨時都能帶",
+    "q6_pets": "OK，只要有清潔、安靜的規範就好",
+    "q8_noise_sensitivity": "休息或專注時需要相對安靜的環境，容易被干擾。",
+    "q9_roommate_interaction": "偶爾會聊天，適度互動",
+    "q10_renting_experience": "從未有過",
+    "q11_gender": "女",
+    "q12_gender_identity": "女",
+    "q13_roommate_gender_preference": [
+      "限性別認同為女性"
+    ],
+    "q14_location": "中山區",
+    "q15_rent_budget": "$15,001 - $18,000",
+    "q16_move_in_date": "2025-12-31",
+    "q17_allergies": [
+      "清潔劑/化學品"
+    ],
+    "q18_smoking_habit": "有，但我會遵守協商後的居住公約，不在室內抽菸",
+    "submittedAt": "2025-12-09T10:32:18.878Z"
+  }
+]
