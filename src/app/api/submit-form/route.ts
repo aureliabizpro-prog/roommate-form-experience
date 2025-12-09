@@ -85,10 +85,10 @@ export async function POST(req: NextRequest) {
         });
 
         // Use fetch with await to ensure it completes before returning
-        await fetch(googleFormUrl.toString(), {
+        fetch(googleFormUrl.toString(), {
             method: 'POST',
             mode: 'no-cors', // Important for cross-origin form submissions
-        }).catch(err => console.error("Google Form submission failed:", err));
+        });
 
         // Return a successful response after Google Form submission attempt
         return NextResponse.json(
