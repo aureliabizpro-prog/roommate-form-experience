@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { formSchema } from '@/lib/formSchema';
-import fs from 'fs/promises';
-import path from 'path';
 
 // The submissions.json file will be created in the project's root directory
-const DB_PATH = path.join(process.cwd(), 'submissions.json');
+// const DB_PATH = path.join(process.cwd(), 'submissions.json'); // Removed
 
 const ENTRY_ID_MAP: Record<string, string> = {
   "email": "entry.1123493236",
@@ -28,23 +26,12 @@ const ENTRY_ID_MAP: Record<string, string> = {
   "q19_additional_notes": "entry.1096376613",
 };
 
-type SubmissionRecord = {
-    id: number;
-    submittedAt: string;
-    [key: string]: unknown;
-};
-
-async function readDb(): Promise<SubmissionRecord[]> {
-    try {
-        const data = await fs.readFile(DB_PATH, 'utf8');
-        return JSON.parse(data) as SubmissionRecord[];
-    } catch (error: unknown) {
-        if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-            return []; // File doesn't exist, return empty array
-        }
-        throw error;
-    }
-}
+// Removed readDb function as local storage is not supported
+// type SubmissionRecord = {
+//     id: number;
+//     submittedAt: string;
+//     [key: string]: unknown;
+// };
 
 export async function POST(req: NextRequest) {
     try {
@@ -60,30 +47,27 @@ export async function POST(req: NextRequest) {
         
         const validatedData = validationResult.data;
 
-        // 1. Save to local "database" (best-effort; may fail on serverless)
-        let db: SubmissionRecord[] = [];
-        try {
-            db = await readDb();
-        } catch (readError) {
-            console.error('Failed to read local submissions DB, continuing without persisted history.', readError);
-        }
+        // Removed local "database" saving logic
+        // let db: SubmissionRecord[] = [];
+        // try {
+        //     db = await readDb();
+        // } catch (readError) {
+        //     console.error('Failed to read local submissions DB, continuing without persisted history.', readError);
+        // }
 
-        const submissionRecord: SubmissionRecord = {
-            id: db.length + 1,
-            ...validatedData,
-            submittedAt: new Date().toISOString(),
-        };
+        // const submissionRecord: SubmissionRecord = {
+        //     id: db.length + 1, // Placeholder ID as local db length is no longer available
+        //     ...validatedData,
+        //     submittedAt: new Date().toISOString(),
+        // };
 
-        db.push(submissionRecord);
+        // db.push(submissionRecord);
 
-        try {
-            await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2));
-        } catch (writeError) {
-            // On platforms like Vercel, filesystem is read-only at runtime.
-            // We still consider the submission successful as long as validation passes
-            // and the Google Form request is sent.
-            console.error('Failed to write local submissions DB (likely read-only filesystem).', writeError);
-        }
+        // try {
+        //     await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2));
+        // } catch (writeError) {
+        //     console.error('Failed to write local submissions DB (likely read-only filesystem).', writeError);
+        // }
 
         // 2. Submit to Google Form
         const googleFormUrl = new URL('https://docs.google.com/forms/d/e/1FAIpQLSf3Pqhjxp9EtA7YukWgHx7ExEQIJt3iCJ22_BtJsfmjGOumfg/formResponse');
@@ -100,18 +84,21 @@ export async function POST(req: NextRequest) {
             }
         });
 
-        fetch(googleFormUrl.toString(), {
+        // Use fetch with await to ensure it completes before returning
+        await fetch(googleFormUrl.toString(), {
             method: 'POST',
-            mode: 'no-cors',
+            mode: 'no-cors', // Important for cross-origin form submissions
         }).catch(err => console.error("Google Form submission failed:", err));
 
+        // Return a successful response after Google Form submission attempt
         return NextResponse.json(
-            { message: 'Form submitted successfully', userId: submissionRecord.id },
+            { message: 'Form submitted successfully' /* userId removed as local id not available */ },
             { status: 200 }
         );
     } catch (error) {
-        // 在雲端環境（如檔案系統限制）遇到任何錯誤時，
-        // 仍然回傳 200，讓前端可以顯示成功畫面。
+        // In serverless environments (e.g., Vercel), if any error occurs
+        // within the try block, we still want to return a 200 to the client
+        // so the frontend can display a success page.
         console.error('Submit form failed, falling back to success response:', error);
         return NextResponse.json(
             { message: 'Form received (fallback), stats may be limited.' },
