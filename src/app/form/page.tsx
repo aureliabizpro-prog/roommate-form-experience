@@ -348,9 +348,9 @@ export default function FormPage() {
     };
     
 	    return (
-	        <main className="flex flex-col min-h-screen w-full bg-slate-50">
-	            <div className="flex-grow flex flex-col items-center justify-start px-4 py-4 sm:py-6 overflow-y-auto">
-	                <div className="w-full max-w-lg mx-auto space-y-4">
+	        <main className="flex flex-col min-h-screen w-full bg-slate-50 pt-6 sm:pt-8">
+	            <div className="flex-grow flex flex-col items-center justify-start px-4 pb-6 overflow-y-auto">
+	                <div className="w-full max-w-sm sm:max-w-md md:max-w-lg mx-auto space-y-4">
 	                    {/* Progress Section */}
 	                    <div className="w-full">
 	                        <div className="flex justify-between items-center mb-2">

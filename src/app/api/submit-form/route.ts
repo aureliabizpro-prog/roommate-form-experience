@@ -57,11 +57,30 @@ export async function POST(req: NextRequest) {
         
         const validatedData = validationResult.data;
 
-        // 1. Save to local "database"
-        const db = await readDb();
-        const submissionRecord = { id: db.length + 1, ...validatedData, submittedAt: new Date().toISOString() };
+        // 1. Save to local "database" (best-effort; may fail on serverless)
+        let db: SubmissionRecord[] = [];
+        try {
+            db = await readDb();
+        } catch (readError) {
+            console.error('Failed to read local submissions DB, continuing without persisted history.', readError);
+        }
+
+        const submissionRecord: SubmissionRecord = {
+            id: db.length + 1,
+            ...validatedData,
+            submittedAt: new Date().toISOString(),
+        };
+
         db.push(submissionRecord);
-        await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2));
+
+        try {
+            await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2));
+        } catch (writeError) {
+            // On platforms like Vercel, filesystem is read-only at runtime.
+            // We still consider the submission successful as long as validation passes
+            // and the Google Form request is sent.
+            console.error('Failed to write local submissions DB (likely read-only filesystem).', writeError);
+        }
 
         // 2. Submit to Google Form
         const googleFormUrl = new URL('https://docs.google.com/forms/d/e/1FAIpQLSf3Pqhjxp9EtA7YukWgHx7ExEQIJt3iCJ22_BtJsfmjGOumfg/formResponse');
